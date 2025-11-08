@@ -1,19 +1,20 @@
-# Stage 1: Build
-FROM node:18 AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build   # Optional for frontend build
+# Use Node 18
+FROM node:18-alpine
 
-# Stage 2: Run
-FROM node:18-slim
+# Set working directory
 WORKDIR /app
-COPY --from=build /app .
-ENV NODE_ENV=production
-ARG BUILD_ID
-ARG GIT_COMMIT
-LABEL build_id=$BUILD_ID
-LABEL git_commit=$GIT_COMMIT
+
+# Copy package.json first to install dependencies
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the app
+COPY . .
+
+# Expose port
 EXPOSE 3000
-CMD ["node", "app.js"]
+
+# Start the app
+CMD ["npm", "start"]
