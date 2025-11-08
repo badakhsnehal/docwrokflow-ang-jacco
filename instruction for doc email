@@ -1,0 +1,17 @@
+crete 
+1 credentionl for dockerhub
+Go to Jenkins Dashboard → Manage Jenkins → Credentials → System → Global credentials (unrestricted).
+Click Add Credentials.
+Kind: Username with password
+Username: your Docker Hub username (e.g., snehal2004)
+Password: your Docker Hub password or access token
+ID: docker-hub-credentials1 (this is the ID you’ll use in your Jenkins pipeline or job)
+Description: optional, e.g., Docker Hub credentials
+
+Post-build Actions
+E-mail Notification
+Recipients
+snehalbadakh2004@gmail.com
+
+Send e-mail for every unstable build
+Send separate e-mails to individuals who broke the build
