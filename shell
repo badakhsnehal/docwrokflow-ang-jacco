@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# --- CONFIGURATION ---
+# Docker Hub repository and image name
+DOCKER_HUB_USERNAME="snehal2004"
+IMAGE_NAME="docker-demo-app"
+DOCKER_HUB_REPO="snehal2004/someapp"
+
+# Get Jenkins environment variables
+BUILD_ID=${BUILD_ID}
+GIT_COMMIT=$(git rev-parse --short HEAD)
+
+# Dynamic tag
+IMAGE_TAG="$GIT_COMMIT-$BUILD_ID"
+
+# --- LOGIN TO DOCKER HUB ---
+# Use credentials injected by Jenkins freestyle job (username/password credentials)
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+# --- BUILD DOCKER IMAGE ---
+docker build -t $IMAGE_NAME:$IMAGE_TAG .
+
+# --- TAG IMAGE FOR DOCKER HUB ---
+docker tag $IMAGE_NAME:$IMAGE_TAG $DOCKER_HUB_REPO:$IMAGE_TAG
+
+# --- PUSH IMAGE TO DOCKER HUB ---
+docker push $DOCKER_HUB_REPO:$IMAGE_TAG
+
+# --- OPTIONAL: CLEANUP LOCAL IMAGES ---
+docker rmi $IMAGE_NAME:$IMAGE_TAG
+docker rmi $DOCKER_HUB_REPO:$IMAGE_TAG
